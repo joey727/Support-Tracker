@@ -44,3 +44,9 @@ Route::resource('activities', ActivitiesController::class);
 
 Route::get('/activity-updates', [ActivityUpdateController::class, 'index'])->name('activity_updates.index');
 Route::post('/activity/{activity}/update', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
+
+use App\Http\Controllers\DashboardController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
