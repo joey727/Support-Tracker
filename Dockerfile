@@ -14,29 +14,28 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Enable Apache mod_rewrite
+# Enable Apache mod_rewrite (for Laravel routes)
 RUN a2enmod rewrite
 
-# Copy existing app files
+# Set Apache DocumentRoot to Laravel's public directory
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf && \
+    sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
+
+# Copy project files
 COPY . /var/www/html
 
-# Install Composer
-COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Create storage and cache directories (fixes your error)
+# Fix permissions and storage folders
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache && \
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Optimize Laravel
-RUN php artisan config:cache || true && \
+RUN composer install --no-dev --optimize-autoloader && \
+    php artisan config:cache || true && \
     php artisan route:cache || true && \
     php artisan view:cache || true
 
 # Expose port 80
 EXPOSE 80
 
-# Run migrations and start Apache
+# Start Apache
 CMD php artisan migrate --force && apache2-foreground
