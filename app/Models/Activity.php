@@ -1,15 +1,21 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Activity extends Model
 {
-    protected $fillable = ['title', 'description', 'active'];
+    use HasFactory;
 
-    public function updates(): HasMany
+    protected $fillable = [
+        'title',
+        'description',
+        'active',
+    ];
+
+    public function updates()
     {
-        return $this->hasMany(ActivityUpdate::class);
+        return $this->hasMany(ActivityUpdate::class, 'activity_id', 'id');
     }
 }

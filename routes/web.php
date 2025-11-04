@@ -31,22 +31,21 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::resource('activities', \App\Http\Controllers\ActivityController::class);
-    Route::resource('activity_updates', \App\Http\Controllers\ActivityUpdateController::class);
+    Route::resource('activities', ActivityController::class);
+    Route::resource('activity_updates', ActivityUpdateController::class);
 });
 
 
-Route::get('/activity-updates', [ActivityUpdateController::class, 'index'])->name('activity_updates.index');
-Route::post('/activity/{activity}/update', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
+// Route::get('/activity-updates', [ActivityUpdateController::class, 'index'])->name('activity_updates.index');
+// Route::post('/activity/{activity}/update', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
 
 
-Route::resource('activities', ActivitiesController::class);
 
-Route::get('/activity-updates', [ActivityUpdateController::class, 'index'])->name('activity_updates.index');
-Route::post('/activity/{activity}/update', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
+// Route::get('/activity-updates', [ActivityUpdateController::class, 'index'])->name('activity_updates.index');
+// Route::post('/activity/{activity}/update', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
 
-use App\Http\Controllers\DashboardController;
+// use App\Http\Controllers\DashboardController;
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// });
