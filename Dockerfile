@@ -26,11 +26,17 @@ COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set correct permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Create storage and cache directories (fixes your error)
+RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Optimize Laravel
+RUN php artisan config:cache || true && \
+    php artisan route:cache || true && \
+    php artisan view:cache || true
 
 # Expose port 80
 EXPOSE 80
 
-# Run Laravel's built-in server
+# Run migrations and start Apache
 CMD php artisan migrate --force && apache2-foreground
